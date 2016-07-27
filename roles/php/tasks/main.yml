@@ -7,3 +7,6 @@
   with_items:
    - php{{ php.version }}
    - php-mysql
+   - php-mbstring
+   - php-xml
+   - libapache2-mod-php

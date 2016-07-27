@@ -3,8 +3,23 @@
   apt:
     name: "{{ item }}"
   with_items:
-    - python-mysql
+    - python-mysqldb
     - mariadb-server
+
+- name: Check if there is already a mysql root password stored
+  become: true
+  stat: path=/root/.my.cnf
+  register: password_set
+
+- name: Generate mysql password
+  set_fact: 
+    mysql_root_password: "{{ lookup('password', '/tmp/passwordfile chars=ascii_letters,digits') }}"
+  when: not password_set.stat.exists
+
+- name: Enable easy root mysql login
+  become: true
+  template: src=templates/my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600
+  when: not password_set.stat.exists
 
 - name: Start the MySQL service
   become: true
@@ -12,15 +27,14 @@
     name: mysql
     state: started
     enabled: true
+  when: not password_set.stat.exists
 
 - name: update mysql root password for all root accounts
   become: true
   mysql_user: 
     name: root 
     host: "{{ item }}" 
-    password: "{{ mysql.root_password }}"
-    login_user: root
-    login_password: "{{ mysql.root_password }}"
+    password: "{{ mysql_root_password }}"
     check_implicit_admin: yes
     priv: "*.*:ALL,GRANT"
   with_items:
@@ -28,7 +42,4 @@
     - 127.0.0.1
     - ::1
     - localhost
-
-- name: Enable easy root mysql login
-  become: true
-  template: src=templates/my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600
+  when: not password_set.stat.exists

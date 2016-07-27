@@ -8,7 +8,7 @@
 - name: Configure SSH Script
   template: src=git_ssh.j2 dest=/tmp/git_ssh.sh mode=700
 
-- name: Synchronising {{ repository.dest }}
+- name: Synchronising {{ repository.url }}
   git:
     repo="{{ repository.url }}"
     dest="/var/www/{{ apache.server_name|lower|replace('.', '_') }}"
@@ -24,6 +24,7 @@
     group=www-data
     state=directory
     recurse=yes
+    mode=0775
 
 - name: Tidy up
   file:

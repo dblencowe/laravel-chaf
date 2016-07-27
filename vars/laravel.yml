@@ -1,0 +1,9 @@
+---
+laravel: {
+  db_name: laravel,
+  db_user: laravel,
+  app_env: production,
+  app_debug: false,
+  app_key: '',
+  app_url: example.com
+}

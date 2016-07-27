@@ -2,9 +2,10 @@
   become: true
   vars_files:
     - vars/setup.yml
-    - vars/mysql.yml
     - vars/php.yml
     - vars/apache.yml
+    - vars/repository.yml
+    - vars/laravel.yml
   roles:
     - { role: setup }
     - { role: fail2ban }
@@ -18,3 +19,4 @@
     - { role: composer }
 
     - { role: repository_pull }
+    - { role: laravel }

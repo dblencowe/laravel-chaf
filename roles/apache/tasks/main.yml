@@ -5,12 +5,15 @@
    - apache2
 
 - name: Install site config
-  template: src=default.conf dest=/etc/apache2/sites-available/{{ apache.server_name|lower|replace('.', '_') }}.conf
+  template: src=templates/example.conf.j2 dest=/etc/apache2/sites-available/{{ apache.server_name|lower|replace('.', '_') }}.conf
 
-- name: a2ensite {{ apache.site_name }}
+- name: Disable default site
+  command: a2dissite *default*
+
+- name: a2ensite {{ apache.server_name }}
   command: a2ensite {{ apache.server_name|lower|replace('.', '_') }}
   args:
-    creates: /etc/apache2/sites-enabled/{{ {{ apache.server_name|lower|replace('.', '_') }} }}.conf
+    creates: /etc/apache2/sites-enabled/{{ apache.server_name|lower|replace('.', '_') }}.conf
   notify:
     - restart apache2
 

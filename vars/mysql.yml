@@ -1,4 +1,0 @@
----
-mysql: {
-  root_password: lookup('password', '/tmp/passwordfile chars=ascii_letters,digits,hexdigits,punctuation')
-}

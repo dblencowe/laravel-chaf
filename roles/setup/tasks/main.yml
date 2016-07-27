@@ -12,7 +12,7 @@
   user: name=deploy groups=sudo,deploy
 
 - name: Upload your key
-  authorized_key: user=deploy key="{{ setup.ssh_key }}"
+  authorized_key: user=deploy key={{ lookup('file', setup.ssh_key) }}
 
 - name: Disallow password authentication
   lineinfile: dest=/etc/ssh/sshd_config

@@ -1,5 +1,5 @@
 ---
 setup: {
-  ssh_key: lookup('file', '/Users/dblencowe/.ssh/id_rsa.pub'),
+  ssh_key: '',
   timezone: "Europe/London"
 }

@@ -1,5 +1,16 @@
 ---
 # This role installs nodejs on the server.
 
+- name: Get NodeJS Argon (LTS) repository script
+  get_url: 
+    url: https://deb.nodesource.com/setup_4.x
+    dest: /tmp/node_4.x_setup
+    mode: u+rwx
+
+- name: Install NodeJS Argon (LTS) repository
+  shell: /tmp/node_4.x_setup
+
 - name: Ensure NodeJS's presence
-  apt: name=nodejs state=present
+  apt: name={{ item }} state=present
+  with_items:
+    - nodejs

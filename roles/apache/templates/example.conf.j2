@@ -4,7 +4,7 @@
         ServerAlias {{ apache.server_alias }}
         DocumentRoot /var/www/{{ apache.server_name|lower|replace('.', '_') }}/public
 
-        <Directory /var/www/>
+        <Directory /var/www/{{ apache.server_name|lower|replace('.', '_') }}/public>
                 Options Indexes FollowSymLinks MultiViews
                 AllowOverride None
                 Order allow,deny

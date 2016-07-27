@@ -1,0 +1,47 @@
+---
+- name: Run NPM install
+  shell: npm install
+  become: deploy
+  args:
+    chdir: "/var/www/{{ apache.server_name|lower|replace('.', '_') }}"
+
+- name: Run composer install
+  shell: composer install
+  become: deploy
+  args:
+    chdir: "/var/www/{{ apache.server_name|lower|replace('.', '_') }}"
+
+- name: Check if there is already a mysql password stored for deploy
+  stat: path=/home/deploy/.my.cnf
+  register: deploy_password_set
+
+- name: Generate mysql password
+  set_fact: 
+    mysql_deploy_password: "{{ lookup('password', '/tmp/passwordfile chars=ascii_letters,digits') }}"
+  when: not deploy_password_set.stat.exists
+
+- name: Enable easy deploy mysql login
+  template: src=templates/my.cnf.j2 dest=/home/deploy/.my.cnf owner=deploy group=deploy mode=0600
+  when: not deploy_password_set.stat.exists
+
+- name: Create the app database
+  mysql_db: db={{ laravel.db_name }} state=present
+
+- name: Create the app database user
+  become: true
+  mysql_user:
+    name: "{{ laravel.db_user }}"
+    password: "{{ mysql_deploy_password }}"
+    priv: "{{ laravel.db_name }}.*:ALL"
+    host: localhost
+  when: not deploy_password_set.stat.exists
+
+- name: Write .env file
+  become: deploy
+  template: src=templates/env.j2 dest="/var/www/{{ apache.server_name|lower|replace('.', '_') }}/.env"
+
+- name: Artisan migrate
+  become: deploy
+  shell: php artisan migrate --force
+  args:
+    chdir: "/var/www/{{ apache.server_name|lower|replace('.', '_') }}"
