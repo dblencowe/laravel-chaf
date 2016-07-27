@@ -32,6 +32,7 @@ Variables are located in the vars/ folder and are split in to different sections
 ### repository.yml
 * url: Git repository to deploy
 * branch: Git branch to deploy
+
 **As well as configuring these two variables you need to put an ssh keypair in roles/repository_pull/files called id_rsa_deployment and id_rsa_deployment.pub. These should be read only keys for your git repository**
 
 ### setup.yml
