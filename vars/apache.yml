@@ -1,0 +1,6 @@
+---
+apache: {
+  webmaster: webmaster@localhost,
+  server_name: example.com,
+  server_alias: www.example.com
+}

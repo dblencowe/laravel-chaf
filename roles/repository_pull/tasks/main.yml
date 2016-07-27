@@ -1,0 +1,34 @@
+---
+- name: Ensure git's presence
+  apt: pkg=git state=present update_cache=yes
+
+- name: Upload SSH Key
+  copy: src=id_rsa_deployment dest=/tmp/id_rsa_deployment mode=600
+
+- name: Configure SSH Script
+  template: src=git_ssh.j2 dest=/tmp/git_ssh.sh mode=700
+
+- name: Synchronising {{ repository.dest }}
+  git:
+    repo="{{ repository.url }}"
+    dest="/var/www/{{ apache.server_name|lower|replace('.', '_') }}"
+    version={{ repository.branch }}
+    accept_hostkey=yes
+  environment:
+    GIT_SSH: /tmp/git_ssh.sh
+
+- name: Ensure permissions are correct
+  file:
+    dest="/var/www/{{ apache.server_name|lower|replace('.', '_') }}"
+    owner=deploy
+    group=www-data
+    state=directory
+    recurse=yes
+
+- name: Tidy up
+  file:
+    path={{ item }}
+    state=absent
+  with_items:
+    - /tmp/id_rsa_deployment
+    - /tmp/git_ssh.sh

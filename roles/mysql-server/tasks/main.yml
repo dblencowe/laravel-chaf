@@ -1,0 +1,34 @@
+---
+- name: Install MySQL and related packages
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - python-mysql
+    - mariadb-server
+
+- name: Start the MySQL service
+  become: true
+  service:
+    name: mysql
+    state: started
+    enabled: true
+
+- name: update mysql root password for all root accounts
+  become: true
+  mysql_user: 
+    name: root 
+    host: "{{ item }}" 
+    password: "{{ mysql.root_password }}"
+    login_user: root
+    login_password: "{{ mysql.root_password }}"
+    check_implicit_admin: yes
+    priv: "*.*:ALL,GRANT"
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: Enable easy root mysql login
+  become: true
+  template: src=templates/my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600

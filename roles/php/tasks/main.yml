@@ -1,0 +1,9 @@
+---
+- name: Install PHP PPA
+  apt_repository: repo=ppa:ondrej/php update_cache=yes
+
+- name: Install php & mysql extension
+  apt: name={{ item }} state=present
+  with_items:
+   - php{{ php.version }}
+   - php-mysql

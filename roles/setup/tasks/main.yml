@@ -1,0 +1,31 @@
+---
+- name: apt-get update
+  raw: apt-get update -qq
+
+- name: Install python
+  raw: apt-get install -qq python
+
+- name: "Create deploy group"
+  group: name=deploy state=present
+
+- name: "Setup deploy user"
+  user: name=deploy groups=sudo,deploy
+
+- name: Upload your key
+  authorized_key: user=deploy key="{{ setup.ssh_key }}"
+
+- name: Disallow password authentication
+  lineinfile: dest=/etc/ssh/sshd_config
+              regexp="^PasswordAuthentication"
+              line="PasswordAuthentication no"
+              state=present
+  notify: restart ssh
+
+- name: Set Timezone to {{ setup.timezone }}
+  shell: echo "{{ setup.timezone }}" | sudo tee /etc/timezone
+
+- name: Reconfigure tzdata package
+  shell: dpkg-reconfigure --frontend noninteractive tzdata
+
+- name: Ensure ntp is installed
+  apt: pkg=ntp state=present

@@ -1,0 +1,5 @@
+---
+# This role installs nodejs on the server.
+
+- name: Ensure NodeJS's presence
+  apt: name=nodejs state=present

@@ -1,0 +1,20 @@
+- hosts: laravel
+  become: true
+  vars_files:
+    - vars/setup.yml
+    - vars/mysql.yml
+    - vars/php.yml
+    - vars/apache.yml
+  roles:
+    - { role: setup }
+    - { role: fail2ban }
+    - { role: force_xterm_bash }
+    - { role: unattended_upgrades }
+
+    - { role: mysql-server }
+    - { role: php }
+    - { role: apache }
+    - { role: nodejs }
+    - { role: composer }
+
+    - { role: repository_pull }
