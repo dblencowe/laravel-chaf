@@ -1,7 +1,7 @@
 # Laravel CHAF - CHuck up And Forget
-This anisble configuration is designed to provide a simple easy to manage way of installing a laravel application on a virtual server.
+This Ansible configuration is designed to provide a simple, easy-to-manage way of installing a Laravel application on a virtual server.
 
-By default it sets up unattended security upgrades, sets SSH to use key based authentication and creates a deploy user for your app.
+By default it sets up unattended security upgrades, sets SSH to use key-based authentication and creates a deploy user for your app.
 
 ## Getting Started
 * [Install Ansible](http://docs.ansible.com/ansible/intro_installation.html)
@@ -11,7 +11,7 @@ By default it sets up unattended security upgrades, sets SSH to use key based au
 * Run `ansible-playbook -i inventory playbook.yml`
 
 ## Variable files
-Variables are located in the vars/ folder and are split in to different sections of the deploy
+Variables are located in the `vars/` folder and are split in to different sections of the deploy
 
 ### apache.yml
 * webmaster: The webmaster email you want apache to be configured with
@@ -21,10 +21,10 @@ Variables are located in the vars/ folder and are split in to different sections
 ### laravel.yml
 * db_name: Database name for your application
 * db_user: Database username for your application
-* app_env: Laravel application environment to use (`production`, `development`, etc),
-* app_debug: Whether to enable laravel debug mode (`true` or `false`)
+* app_env: Laravel application environment to use (`production`, `development`, etc)
+* app_debug: Whether to enable Laravel debug mode (`true` or `false`)
 * app_key: The app key to use (Generate this with `php artisan key:generate`)
-* app_url: The primary application url
+* app_url: The primary application URL
 
 ### php.yml
 * version: Version of PHP you want to install (`5.5`, `5.6`, `7.0`)
@@ -41,4 +41,4 @@ Variables are located in the vars/ folder and are split in to different sections
 
 
 ## MySQL access
-The config generates random mysql passwords for the root and app accounts. The passwords are stored in /root/.my.cnf and /home/deploy/.my.cnf respectively
+The config generates random MySQL passwords for the root and app accounts. The passwords are stored in `/root/.my.cnf` and `/home/deploy/.my.cnf` respectively
